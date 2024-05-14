@@ -1,106 +1,69 @@
-import { Shape } from '../Shape'; // Import the Shape interface
+import { Shape } from '../Shape';
+import * as THREE from 'three';
 
 class Circle implements Shape {
-  private gl: WebGLRenderingContext;
   private centerX: number;
   private centerY: number;
   private centerZ: number;
   private radius: number;
-  public vertices: number[] = []; // Array to store vertices
+  private plane: string;
 
-  constructor(gl: WebGLRenderingContext, plane: string) {
-    this.gl = gl;
-    this.centerX = 0;
-    this.centerY = 0;
-    this.centerZ = 0;
-    this.radius = 0;
-
-    // Prompt the user for input
-    this.Input(plane);
+  constructor(centerX: number, centerY: number, centerZ: number, radius: number, plane: string) 
+  { 
+    console.log(centerX + " " + centerY + " " + centerZ );
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.centerZ = centerZ;
+    this.radius = radius;
+    this.plane = plane;
   }
 
-  private Input(plane: string): void {
-    if (plane === 'XY') {
-      const inputX = prompt('Enter the X coordinate for the center of the circle:');
-      const inputY = prompt('Enter the Y coordinate for the center of the circle:');
-      const inputZ = 0;
-      const inputRadius = prompt('Enter the radius of the circle:');
-
-      const x = parseFloat(inputX || '0');
-      const y = parseFloat(inputY || '0');
-      const z = parseFloat(inputZ || '0');
-      const r = parseFloat(inputRadius || '0');
-
-      this.centerX = x;
-      this.centerY = y;
-      this.centerZ = z;
-      this.radius = r;
-
-      this.generateVertices();
-    } else if (plane === 'YZ') {
-      const inputX = 0;
-      const inputY = prompt('Enter the Y coordinate for the center of the circle:');
-      const inputZ = prompt('Enter the Z coordinate for the center of the circle:');
-      const inputRadius = prompt('Enter the radius of the circle:');
-
-      const x = parseFloat(inputX || '0');
-      const y = parseFloat(inputY || '0');
-      const z = parseFloat(inputZ || '0');
-      const r = parseFloat(inputRadius || '0');
-
-      this.centerX = x;
-      this.centerY = y;
-      this.centerZ = z;
-      this.radius = r;
-
-      this.generateVertices();
-    } else {
-      const inputX = prompt('Enter the X coordinate for the center of the circle:');
-      const inputY = 0;
-      const inputZ = prompt('Enter the Z coordinate for the center of the circle:');
-      const inputRadius = prompt('Enter the radius of the circle:');
-
-      const x = parseFloat(inputX || '0');
-      const y = parseFloat(inputY || '0');
-      const z = parseFloat(inputZ || '0');
-      const r = parseFloat(inputRadius || '0');
-
-      this.centerX = x;
-      this.centerY = y;
-      this.centerZ = z;
-      this.radius = r;
-
-      this.generateVertices();
-    }
-  }
-
-  private generateVertices(): void {
+  public draw(scene: THREE.Scene): void {
     const segments = 100; // Number of line segments to approximate the circle
     const anglePerSegment = (Math.PI * 2) / segments;
 
-    // Generate vertices for the circle in 3D
+    const geometry = new THREE.BufferGeometry(); // Create a buffer geometry
+    const vertices: number[] = [];
+
+    // Generate vertices for the circle based on the selected plane
     for (let i = 0; i <= segments; i++) {
       const angle = i * anglePerSegment;
-      const x = this.centerX + Math.cos(angle) * this.radius;
-      const y = this.centerY + Math.sin(angle) * this.radius;
-      const z = this.centerZ;
-      this.vertices.push(x, y, z);
+      let x = 0, y = 0, z = 0;
+
+      switch (this.plane) {
+        case 'XY':
+          x = this.centerX + Math.cos(angle) * this.radius;
+          y = this.centerY + Math.sin(angle) * this.radius;
+          z = this.centerZ;
+          break;
+        case 'YZ':
+          y = this.centerY + Math.cos(angle) * this.radius;
+          z = this.centerZ + Math.sin(angle) * this.radius;
+          x = this.centerX;
+          break;
+        case 'ZX':
+          x = this.centerX + Math.cos(angle) * this.radius;
+          z = this.centerZ + Math.sin(angle) * this.radius;
+          y = this.centerY;
+          break;
+        default:
+          console.error('Unknown plane:', this.plane);
+          break;
+      }
+
+      vertices.push(x, y, z);
     }
-  }
 
-  public draw(): void {
-    // Create and bind vertex buffer
-    const vertexBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.STATIC_DRAW);
+    // Add vertices to the buffer geometry
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
-    // Set up vertex attribute
-    const positionLocation = this.gl.getAttribLocation(this.gl.getParameter(this.gl.CURRENT_PROGRAM), 'a_position');
-    this.gl.enableVertexAttribArray(positionLocation);
-    this.gl.vertexAttribPointer(positionLocation, 3, this.gl.FLOAT, false, 0, 0); // 3 components for 3D vertices
-
-    // Draw the circle as a solid triangle fan
-    this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.vertices.length / 3);
+    // Create a line loop from the geometry
+    const material = new THREE.LineBasicMaterial({ color: 0xff00ff }); // Red color
+    const circle = new THREE.LineLoop(geometry, material);
+    
+    // Add the circle to the scene
+    scene.add(circle);
+  
   }
 }
 

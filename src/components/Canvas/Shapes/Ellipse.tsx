@@ -1,103 +1,71 @@
+import * as THREE from 'three';
+import { Shape } from '../Shape';
 
-
-class EllipseDrawer 
-{
-  private gl: WebGLRenderingContext;
+class Ellipse implements Shape {
   private centerX: number;
   private centerY: number;
   private centerZ: number;
   private radiusX: number;
   private radiusY: number;
   private radiusZ: number;
+  private plane: string;
 
-  constructor(gl: WebGLRenderingContext, plane: string) {
-    this.gl = gl;
-    this.centerX = 0;
-    this.centerY = 0;
-    this.centerZ = 0;
-    this.radiusX = 0;
-    this.radiusY = 0;
-    this.radiusZ = 0;
-
-    // Prompt the user for input based on the selected plane
-    if (plane === 'XY') {
-      const inputX = prompt('Enter the X coordinate for the center of the ellipse:');
-      const inputY = prompt('Enter the Y coordinate for the center of the ellipse:');
-      const inputZ = '0';
-      const inputRadiusX = prompt('Enter the X radius of the ellipse:');
-      const inputRadiusY = prompt('Enter the Y radius of the ellipse:');
-      const inputRadiusZ = 0;
-
-      this.centerX = parseFloat(inputX || '0');
-      this.centerY = parseFloat(inputY || '0');
-      this.centerZ = parseFloat(inputZ || '0');
-      this.radiusX = parseFloat(inputRadiusX || '0');
-      this.radiusY = parseFloat(inputRadiusY || '0');
-      this.radiusZ = parseFloat(inputRadiusZ || '0');
-    } else if (plane === 'YZ') {
-      const inputX = '0';
-      const inputY = prompt('Enter the Y coordinate for the center of the ellipse:');
-      const inputZ = prompt('Enter the Z coordinate for the center of the ellipse:');
-      const inputRadiusX = 0;
-      const inputRadiusY = prompt('Enter the Y radius of the ellipse:');
-      const inputRadiusZ = prompt('Enter the Z radius of the ellipse:');
-
-      this.centerX = parseFloat(inputX || '0');
-      this.centerY = parseFloat(inputY || '0');
-      this.centerZ = parseFloat(inputZ || '0');
-      this.radiusX = parseFloat(inputRadiusX || '0');
-      this.radiusY = parseFloat(inputRadiusY || '0');
-      this.radiusZ = parseFloat(inputRadiusZ || '0');
-    } else if (plane === 'ZX') {
-      const inputX = prompt('Enter the X coordinate for the center of the ellipse:');
-      const inputY = '0';
-      const inputZ = prompt('Enter the Z coordinate for the center of the ellipse:');
-      const inputRadiusX = prompt('Enter the X radius of the ellipse:');
-      const inputRadiusY = 0;
-      const inputRadiusZ = prompt('Enter the Z radius of the ellipse:');
-
-      this.centerX = parseFloat(inputX || '0');
-      this.centerY = parseFloat(inputY || '0');
-      this.centerZ = parseFloat(inputZ || '0');
-      this.radiusX = parseFloat(inputRadiusX || '0');
-      this.radiusY = parseFloat(inputRadiusY || '0');
-      this.radiusZ = parseFloat(inputRadiusZ || '0');
-    } else {
-      console.error('Invalid plane:', plane);
-    }
-
-    // Draw the ellipse
-    this.draw();
+  constructor(centerX: number, centerY: number, centerZ: number, radiusX: number, radiusY: number, radiusZ: number, plane: string) {
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.centerZ = centerZ;
+    this.radiusX = radiusX;
+    this.radiusY = radiusY;
+    this.radiusZ = radiusZ;
+    this.plane = plane;
   }
 
-  public draw(): void {
+  public draw(scene: THREE.Scene): void {
     const segments = 50; // Number of line segments to approximate the ellipse
     const anglePerSegment = (Math.PI * 2) / segments;
-    const vertices = [];
 
-    // Generate vertices for the ellipse in 3D
+    const geometry = new THREE.BufferGeometry();
+    const vertices: number[] = [];
+
     for (let i = 0; i <= segments; i++) {
-      
       const angle = i * anglePerSegment;
-      const x = this.centerX + Math.cos(angle) * this.radiusX;
-      const y = this.centerY + Math.sin(angle) * this.radiusY;
-      const z = this.centerZ + Math.sin(angle) * this.radiusZ; // Z coordinate for 3D ellipse
-      vertices.push(x, y, z);
+      let x = 0, y = 0, z = 0;
+
+      switch (this.plane) {
+        case 'XY':
+          x = this.centerX + Math.cos(angle) * this.radiusX;
+          y = this.centerY + Math.sin(angle) * this.radiusY;
+          z = this.centerZ;
+          vertices.push(x, y, z);
+          break;
+        case 'YZ':
+          x = this.centerX + Math.cos(angle) * this.radiusX;
+          y = this.centerY + Math.sin(angle) * this.radiusY;
+          z = this.centerZ ;
+          vertices.push(x, y, z);
+          break;
+        case 'ZX':
+          x = this.centerX + Math.cos(angle) * this.radiusX;
+          y = this.centerY + Math.sin(angle) * this.radiusY;
+          z = this.centerZ ;
+          vertices.push(x, y ,z);
+          break;
+        default:
+          console.error('Invalid plane:', this.plane);
+          return;
+      }
+
+     
     }
 
-    // Create and bind vertex buffer
-    const vertexBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
-    // Set up vertex attribute
-    const positionLocation = this.gl.getAttribLocation(this.gl.getParameter(this.gl.CURRENT_PROGRAM), 'a_position');
-    this.gl.enableVertexAttribArray(positionLocation);
-    this.gl.vertexAttribPointer(positionLocation, 3, this.gl.FLOAT, false, 0, 0); // 3 components for 3D vertices
+    const material = new THREE.LineBasicMaterial({ color: 0xff00ff }); // Purple color
+    const ellipse = new THREE.LineLoop(geometry, material);
+    
 
-    // Draw the ellipse in 3D
-    this.gl.drawArrays(this.gl.LINE_STRIP, 0, segments + 1);
+    scene.add(ellipse);
   }
 }
 
-export default EllipseDrawer;
+export default Ellipse;

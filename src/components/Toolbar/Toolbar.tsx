@@ -7,70 +7,58 @@ import lineIcon from './icons/line.png';
 import arcIcon from './icons/arc.png'; 
 import { BlobOptions } from 'buffer';
 
-interface ToolbarProps 
-{
-  OnSelectPrimitive: (primitive: string) => void; // Corrected
+interface ToolbarProps {
+  OnSelectPrimitive: (primitive: string) => void;
   OnSelectPlane: (plane: string) => void;
   onErase?: () => void;
-  OnViewClick: (clicked : boolean) => void;
+  OnViewClick: (clicked: boolean) => void; // Updated to accept a boolean parameter
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane,onErase,OnViewClick }) => 
-{
+const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, onErase, OnViewClick }) => {
   const [showPlanes, setShowPlanes] = useState(false);
   const [showShapes, setShowShapes] = useState(false);
   const [showSketchButtons, setShowSketchButtons] = useState(false);
-  const [showSketchAndView, setShowSketchAndView] = useState(true); // New state to control visibility of Sketch and View buttons
+  const [showSketchAndView, setShowSketchAndView] = useState(true);
+  const [Viewbutton, setView] = useState(false);
 
   const handleSketchClick = () => {
-    // Reset state when Sketch button is clicked
     setShowPlanes(true);
     setShowShapes(false);
     setShowSketchButtons(true);
-    // Hide Sketch and View buttons
     setShowSketchAndView(false); 
   };
 
-  const handleViewClick = () =>
-   {
-    // Logic for view button click
+  const handleViewClick = () => {
     console.log('View button clicked');
-    OnViewClick(true);
-    // Hide sketch buttons when switching to view mode
+    // Toggle the boolean value
+    setView(!Viewbutton);
+    OnViewClick(Viewbutton); 
     setShowSketchButtons(false);
   };
 
   const handlePlaneButtonClick = (plane: string) => {
-    // Show the shape buttons
     setShowShapes(true);
     console.log(`Plane ${plane} choosen`);
     OnSelectPlane(plane);
   };
 
   const handleShapeButtonClick = (shape: string) => {
-    // Logic to handle shape button click
     console.log(`Shape ${shape} clicked`);
-    // Notify parent component of selected primitive
     OnSelectPrimitive(shape); 
   };
 
   const handleEraseClick = () => {
-    // Logic for erase button click
     console.log('Erase button clicked');
-    // Notify parent component of erase action if provided
     if (onErase) {
       onErase();
     }
   };
 
   const handleFinishSketchingClick = () => {
-    // Logic for finish sketching button click
     console.log('Finish sketching button clicked');
-    // Reset state when finishing sketching
     setShowSketchButtons(false);
     setShowPlanes(false);
     setShowShapes(false);
-    // Show Sketch and View buttons again
     setShowSketchAndView(true); 
   };
 
@@ -86,8 +74,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane,onEr
         <>
           <button className="button plane" onClick={() => handlePlaneButtonClick('XY')} title="Sketch on the XY Plane">XY-Plane</button>
           <button className="button plane" onClick={() => handlePlaneButtonClick('YZ')} title="Sketch on the YZ Plane">YZ-Plane</button>
-          <button className="button plane" onClick={() => handlePlaneButtonClick('ZX')} title="Sketch on the ZX Plane">ZX-Plane</button>
-         
+          <button className="button plane" onClick={() => handlePlaneButtonClick('ZX')} title="Sketch on the ZX Plane">XZ-Plane</button>
         </>
       )}
       {showShapes && (

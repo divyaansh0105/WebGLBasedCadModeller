@@ -1,64 +1,33 @@
-class PointDrawer {
-  private gl: WebGLRenderingContext;
+import * as THREE from 'three';
+import { Shape } from '../Shape';
+
+class Point implements Shape {
   private x: number;
   private y: number;
   private z: number;
 
-  constructor(gl: WebGLRenderingContext, plane: string) {
-    this.gl = gl;
-    this.x = 0;
-    this.y = 0;
-    this.z = 0;
-
-    // Prompt the user for input based on the selected plane
-    if (plane === 'XY') {
-      const inputX = prompt('Enter the X coordinate for the point:');
-      const inputY = prompt('Enter the Y coordinate for the point:');
-      const inputZ = '0';
-
-      this.x = parseFloat(inputX || '0');
-      this.y = parseFloat(inputY || '0');
-      this.z = parseFloat(inputZ || '0');
-    } else if (plane === 'YZ') {
-      const inputX = '0';
-      const inputY = prompt('Enter the Y coordinate for the point:');
-      const inputZ = prompt('Enter the Z coordinate for the point:');
-
-      this.x = parseFloat(inputX || '0');
-      this.y = parseFloat(inputY || '0');
-      this.z = parseFloat(inputZ || '0');
-    } else if (plane === 'ZX') {
-      const inputX = prompt('Enter the X coordinate for the point:');
-      const inputY = '0';
-      const inputZ = prompt('Enter the Z coordinate for the point:');
-
-      this.x = parseFloat(inputX || '0');
-      this.y = parseFloat(inputY || '0');
-      this.z = parseFloat(inputZ || '0');
-    } else {
-      console.error('Invalid plane:', plane);
-    }
-
-    // Draw the point
-    this.draw();
+  constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
   }
 
-  public draw(): void {
-    const vertices = [this.x, this.y, this.z]; // Include Z coordinate for 3D point
+  public draw(scene: THREE.Scene): void {
+    // Create a sphere geometry for the point
+    const geometry = new THREE.SphereGeometry(0.1, 16, 16); // Adjust the size and detail as needed
 
-    // Create and bind vertex buffer
-    const vertexBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), this.gl.STATIC_DRAW);
+    // Create a material for the point
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // Red color
 
-    // Set up vertex attribute
-    const positionLocation = this.gl.getAttribLocation(this.gl.getParameter(this.gl.CURRENT_PROGRAM), 'a_position');
-    this.gl.enableVertexAttribArray(positionLocation);
-    this.gl.vertexAttribPointer(positionLocation, 3, this.gl.FLOAT, false, 0, 0); // 3 components for 3D point
+    // Create a mesh with the geometry and material
+    const point = new THREE.Mesh(geometry, material);
 
-    // Draw the point
-    this.gl.drawArrays(this.gl.POINTS, 0, 1);
+    // Set the position of the point mesh
+    point.position.set(this.x, this.y, this.z);
+
+    // Add the point to the scene
+    scene.add(point);
   }
 }
 
-export default PointDrawer;
+export default Point;
