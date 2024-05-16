@@ -82,3 +82,8 @@ We welcome contributions to this project! Please see the `CONTRIBUTING.md` file 
 ## Snapshots
 
 ![Screenshot (166)](https://github.com/divyaansh0105/WebGLBasedCadModeller/assets/158050858/c053a917-90b4-40d8-a6bd-7f943bfbb056)
+![Screenshot (165)](https://github.com/divyaansh0105/WebGLBasedCadModeller/assets/158050858/7bbe18c0-6a1c-478e-99b3-ee83687631b8)
+![Screenshot (164)](https://github.com/divyaansh0105/WebGLBasedCadModeller/assets/158050858/828e197c-6aef-4970-9a94-8a460b35e300)
+![Screenshot (163)](https://github.com/divyaansh0105/WebGLBasedCadModeller/assets/158050858/15e5b651-6fea-4c69-a5f7-a0f5cbcc3682)
+![Screenshot (160)](https://github.com/divyaansh0105/WebGLBasedCadModeller/assets/158050858/f0b1e4dd-2461-4894-8775-7545ec6fb3c1)
+
