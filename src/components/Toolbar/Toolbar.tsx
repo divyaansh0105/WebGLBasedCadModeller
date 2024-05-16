@@ -5,27 +5,34 @@ import ellipseIcon from './icons/ellipse.png';
 import pointIcon from './icons/point.png'; 
 import lineIcon from './icons/line.png'; 
 import arcIcon from './icons/arc.png'; 
-import { BlobOptions } from 'buffer';
+
 
 interface ToolbarProps {
   OnSelectPrimitive: (primitive: string) => void;
   OnSelectPlane: (plane: string) => void;
-  onErase?: () => void;
-  OnViewClick: (clicked: boolean) => void; // Updated to accept a boolean parameter
+  OnErase : (erase : boolean) => void;
+  OnViewClick: (clicked: boolean) => void; 
+  OnFinishSketchClick: (finishclicked : boolean) => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, onErase, OnViewClick }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, OnErase, OnViewClick ,OnFinishSketchClick}) => {
   const [showPlanes, setShowPlanes] = useState(false);
   const [showShapes, setShowShapes] = useState(false);
   const [showSketchButtons, setShowSketchButtons] = useState(false);
   const [showSketchAndView, setShowSketchAndView] = useState(true);
   const [Viewbutton, setView] = useState(false);
+  const [Finishbuton,SetFinish] = useState(false);
+  const [EraseButton,SetErase] = useState(true);
 
   const handleSketchClick = () => {
     setShowPlanes(true);
     setShowShapes(false);
     setShowSketchButtons(true);
-    setShowSketchAndView(false); 
+    setShowSketchAndView(false);
+    SetFinish(!Finishbuton); 
+    OnFinishSketchClick(Finishbuton);
+    console.log("finsha =" + Finishbuton);
+   
   };
 
   const handleViewClick = () => {
@@ -42,20 +49,26 @@ const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, onE
     OnSelectPlane(plane);
   };
 
-  const handleShapeButtonClick = (shape: string) => {
+  const handleShapeButtonClick = (shape: string) =>
+  {
     console.log(`Shape ${shape} clicked`);
     OnSelectPrimitive(shape); 
+   
   };
 
-  const handleEraseClick = () => {
-    console.log('Erase button clicked');
-    if (onErase) {
-      onErase();
-    }
+  const handleEraseClick = () => 
+  {
+
+    SetErase(!EraseButton);
+    OnErase(EraseButton);
+      
   };
 
   const handleFinishSketchingClick = () => {
     console.log('Finish sketching button clicked');
+    
+    SetFinish(!Finishbuton);
+    OnFinishSketchClick(Finishbuton);
     setShowSketchButtons(false);
     setShowPlanes(false);
     setShowShapes(false);
