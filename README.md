@@ -79,4 +79,6 @@ Here's a breakdown of the technologies used in the project:
 
 We welcome contributions to this project! Please see the `CONTRIBUTING.md` file (if it exists) for details on how to contribute code, report issues, or suggest improvements.
 
+## Snapshots
 
+![Screenshot (166)](https://github.com/divyaansh0105/WebGLBasedCadModeller/assets/158050858/c053a917-90b4-40d8-a6bd-7f943bfbb056)
