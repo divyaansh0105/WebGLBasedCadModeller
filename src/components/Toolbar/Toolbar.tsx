@@ -59,11 +59,14 @@ const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, OnE
   const handleEraseClick = () => 
   {
 
-    //SetErase(!EraseButton);
-    //OnErase(EraseButton);
     OnSelectPrimitive('Erase');
   };
 
+  const handleEditShapeClick = () => 
+  {
+    // Add your logic here for handling the click on the "Edit Shape" button
+    OnSelectPrimitive('Edit');
+  };
   const handleFinishSketchingClick = () => {
     console.log('Finish sketching button clicked');
     
@@ -99,12 +102,13 @@ const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, OnE
           <button className="button shape" onClick={() => handleShapeButtonClick('Line')} style={{ backgroundImage: `url(${lineIcon})` }} title="Line"></button>
         </>
       )}
-      {showSketchButtons && (
-        <>
-          <button className="button erase-finish" onClick={handleEraseClick} title="Erase">Erase</button>
-          <button className="button erase-finish" onClick={handleFinishSketchingClick} title="Finish Sketch">✅</button>
-        </>
-      )}
+     {showSketchButtons && (
+  <>
+    <button className="button erase-finish" onClick={handleEraseClick} title="Erase">🗑️</button>
+    <button className="button edit-shape" onClick={handleEditShapeClick} title="Edit Shape">🔧</button>
+    <button className="button erase-finish" onClick={handleFinishSketchingClick} title="Finish Sketch">✅</button>
+  </>
+)}
     </div>
   );
 };

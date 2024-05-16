@@ -17,20 +17,45 @@ class Line implements Shape {
     this.EndPoint.z = Endpoint.z ;
     this.plane = plane;
 
+    this.convert2dto3d();
     this.initializeVertices();
   }
 
+  private convert2dto3d()
+  {
+    if(this.plane === 'YZ')
+      {
+        let temp1 = this.EndPoint.x;
+        let temp2 = this.EndPoint.y;
+        let temp3 = this.EndPoint.z;
+        
+        this.EndPoint.x = temp3;
+        this.EndPoint.y = temp1;
+        this.EndPoint.z = temp2;
+      }
+      
+    if(this.plane === 'ZX')
+      {
+        let temp1 = this.EndPoint.x;
+        let temp2 = this.EndPoint.y;
+        let temp3 = this.EndPoint.z;
+        
+        this.EndPoint.x = temp1;
+        this.EndPoint.y = temp3;
+        this.EndPoint.z = temp2;
+      }
+  }
   private initializeVertices(): void {
     if (this.plane === 'XY') 
     {
-      this.vertices2d.push(this.StartPoint.x, this.StartPoint.y,0, this.EndPoint.x, this.EndPoint.y,0);
+      this.vertices2d.push(this.StartPoint.x, this.StartPoint.y,this.StartPoint.z, this.EndPoint.x, this.EndPoint.y,this.EndPoint.z);
       this.vertices3d.push(this.StartPoint.x, this.StartPoint.y, this.StartPoint.z, this.EndPoint.x, this.EndPoint.y, this.EndPoint.z);
     } else if (this.plane === 'ZX') {
-      this.vertices2d.push(this.StartPoint.x, this.StartPoint.y,0, this.EndPoint.x, this.EndPoint.y,0);
-      this.vertices3d.push(this.StartPoint.x, this.StartPoint.z, this.StartPoint.y, this.EndPoint.x, this.EndPoint.z, this.EndPoint.y);
+      this.vertices2d.push(this.StartPoint.x, this.StartPoint.y,this.StartPoint.z, this.EndPoint.x, this.EndPoint.z,this.EndPoint.y);
+      this.vertices3d.push(this.StartPoint.x, this.StartPoint.y, this.StartPoint.z, this.EndPoint.x, this.EndPoint.y, this.EndPoint.z);
     } else if (this.plane === 'YZ') {
-      this.vertices2d.push(this.StartPoint.x, this.StartPoint.y,0, this.EndPoint.x, this.EndPoint.y,0);
-      this.vertices3d.push(this.StartPoint.z, this.StartPoint.x, this.StartPoint.y, this.EndPoint.z, this.EndPoint.x, this.EndPoint.y);
+      this.vertices2d.push(this.StartPoint.x, this.StartPoint.y,this.StartPoint.z, this.EndPoint.y, this.EndPoint.z,this.EndPoint.x);
+      this.vertices3d.push(this.StartPoint.x, this.StartPoint.y, this.StartPoint.z, this.EndPoint.x, this.EndPoint.y, this.EndPoint.z);
     }
   }
 
@@ -96,6 +121,43 @@ class Line implements Shape {
     return distance < threshold;
   }
 
+  
+  public getProperties(): { [key: string]: number } {
+    return {
+      start_point_x: this.StartPoint.x,
+      start_point_y: this.StartPoint.y,
+      start_point_z: this.StartPoint.z,
+      end_point_x: this.EndPoint.x,
+      end_point_y: this.EndPoint.y,
+      end_point_z: this.EndPoint.z,
+    };
+  }
+
+  public updateProperties(properties: { [propertyName: string]: number }): void {
+    if ('start_point_x' in properties) {
+      this.StartPoint.x = properties.start_point_x;
+    }
+    if ('start_point_y' in properties) {
+      this.StartPoint.y = properties.start_point_y;
+    }
+    if ('start_point_z' in properties) {
+      this.StartPoint.z = properties.start_point_z;
+    }
+    if ('end_point_x' in properties) {
+      this.EndPoint.x = properties.end_point_x;
+    }
+    if ('end_point_y' in properties) {
+      this.EndPoint.y = properties.end_point_y;
+    }
+    if ('end_point_z' in properties) {
+      this.EndPoint.z = properties.end_point_z;
+    }
+
+    this.vertices2d =[];
+    this.vertices3d =[];
+    this.convert2dto3d();
+    this.initializeVertices();
+  }
 }
 
 export default Line;

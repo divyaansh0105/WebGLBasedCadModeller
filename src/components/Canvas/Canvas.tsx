@@ -1,17 +1,21 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Shape } from '../../interfaces/Shape';
+
 import Circle from '../../Shapes/Circle';
 import Ellipse from '../../Shapes/Ellipse';
 import Point from '../../Shapes/Point';
 import Line from '../../Shapes/Line';
 import Arc from '../../Shapes/Arc';
 import Point3D from '../../Shapes/Point3D';
-import { handleMouseClick } from '../../functioons/MouseCoordinates';
 
+import { handleMouseClick } from '../../functioons/MouseCoordinates';
+import {Erasefun} from '../../functioons/EraseFun';
+import EditFunction from '../../functioons/EditFunction';
+import EditForm from '../../forms/EditForm';
 
 import { Planes } from '../../interfaces/Planes'; // Import the Planes interface
+import { Shape } from '../../interfaces/Shape';
 
 const Canvas: React.FC<{ selectedPrimitive: string | null; selectedPlane: string; View: boolean ; FinishSketch : boolean ;Erase : boolean }> = ({
   selectedPrimitive: SelectedPrimitive,
@@ -27,7 +31,18 @@ const Canvas: React.FC<{ selectedPrimitive: string | null; selectedPlane: string
   const controlsRef = useRef<OrbitControls | null>(null);
   const [clickedPosition, setClickedPosition] = useState<Point3D | null>(null);
   const [GetMouseClick,SetMouseClick] = useState<string | null>("no");
+  const [selectedShape, setSelectedShape] = useState<Shape | null>(null);
+  const [selectedShapeProperties, setSelectedShapeProperties] = useState<{ [propertyName: string]: any }>({});
+  const [showEditForm, setShowEditForm] = useState(false);
+  
   const scene = new THREE.Scene();
+
+
+  const handleShapeSelected = (shape: Shape, properties: { [propertyName: string]: any }) => {
+    // Update state with the selected shape and its properties
+    setSelectedShape(shape);
+    setSelectedShapeProperties(properties);
+  };
 
 useEffect(() => {
     const handleCanvasClick = (event: MouseEvent) => 
@@ -89,12 +104,25 @@ useEffect(() => {
         addShapeToPlane(arc, SelectedPlane);
         break;
       case 'Erase':
-        Erasefun();
+        Erasefun(clickedPosition, planes, setPlanes);
         break;
-      default:
+      case 'Edit':
+          EditFunction({clickedPosition, planes, setPlanes,handleShapeSelected});
+          break;
+        default:
         console.error('Unknown primitive:', SelectedPrimitive);
     }
   }, [clickedPosition]);
+
+  useEffect(() => {
+    if (selectedShape && Object.keys(selectedShapeProperties).length > 0) {
+      setShowEditForm(true);
+  } 
+  else 
+  {
+    setShowEditForm(false);
+  } 
+  }, [selectedShape, selectedShapeProperties]);
 
   useEffect(() => 
   {
@@ -147,7 +175,7 @@ useEffect(() => {
   
 
   useEffect(() => {
-    // Perform your action here when viewstatus changes
+    // Action  when viewstatus changes
    
     if(Viewstatus)
       {
@@ -199,38 +227,17 @@ useEffect(() => {
 
 
 
-  // Perform your action when eraseClicked state changes
-  const Erasefun = () =>
-  {
-    
-      if (clickedPosition) {
-        const clickedX = clickedPosition.x;
-        const clickedY = clickedPosition.y;
-
-        // Iterate through the planes and check if the clicked position is inside any shape's boundary
-        const updatedPlanes = Object.keys(planes).reduce((updated, plane) => {
-            const updatedShapes = planes[plane].filter(shape => {
-                // Check if the clicked position is inside the area of the shape
-                if (shape.IsPointOnPerimeter) {
-                    return !shape.IsPointOnPerimeter(clickedX, clickedY);
-                } else {
-                    return true; // If the shape doesn't have the IsPointInside method, keep it
-                }
-            });
-            return { ...updated, [plane]: updatedShapes };
-        }, {});
-
-        // Update the state with the filtered array, removing the shapes that were clicked on
-        setPlanes(updatedPlanes);
-    } 
-  }
-  
 
 
   
 
-  return <canvas ref={canvasRef}
-  style={{ width: '100%', height: 'calc(100% - 60px)'}} />;
-};
+  return (
+    <div>
+      
+      {showEditForm && <EditForm shape={selectedShape} properties={selectedShapeProperties} setPlanes={setPlanes} setShowEditForm={setShowEditForm} />}
+
+      <canvas ref={canvasRef} style={{ width: '100%', height: 'calc(100% - 60px)' }} />
+    </div>
+  );};
 
 export default Canvas;

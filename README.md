@@ -1,45 +1,82 @@
-# Getting Started with Create React App
+# WebGLBasedCAD Modeller
+
+WebGLBasedCAD Modeller is a web-based computer-aided design (CAD) modeller built using WebGL, React, and TypeScript. It allows users to create fundamental geometric shapes like points, lines, circles, ellipses, and arcs on a chosen plane in a virtual environment.
+
+## Getting Started
+
+### Prerequisites
+
+- A modern web browser with WebGL support (most modern browsers support WebGL).
+- Node.js and npm (or yarn) installed on your system. You can verify their versions by running `node -v` and `npm -v` (or `yarn -v`) in your terminal.
+
+### Installation
+
+1. Clone or download the project repository.
+2. Navigate to the project directory: `cd path/to/your/project`
+3. Install dependencies: `npm install` (or `yarn install`)
+
+### Running the Project
+
+1. Start the development server: `npm start` (or `yarn start`)
+2. Open [http://localhost:3000](http://localhost:3000) (or the specified development port) in your web browser.
+3. The CAD modeller should launch and allow you to create shapes.
+
+## Using the Project
+
+The project offers functionalities for creating and editing shapes in a 3D environment:
+
+### Entering Sketch Mode
+
+- Press the "Sketch" button to enter the shape creation mode.
+- The interface might transition to provide options for selecting the plane where you want to draw the shape.
+
+### Plane Selection (If applicable)
+
+- Choose the desired plane (e.g., XY, XZ, YZ) where you want to create the shape. This might involve selecting from a menu or using visual cues.
+
+### Shape Creation
+
+- Select the desired primitive shape from the provided interface elements (buttons, menus, etc.).
+- Set the shape's parameters (e.g., coordinates, lengths for lines, radii, angles, directions) using input fields or sliders.
+- Once the parameters are set, click on the 3D canvas where you want to create the shape.
+
+### Shape Editing (Note that this functionality might be under development)
+
+- You can edit the shapes you create using the "Edit" function. This functionality might involve:
+  - Dragging the shape's vertices or control points directly on the canvas.
+  - Adjusting the shape's parameters through input fields or sliders.
+  - Using specific editing tools provided by the interface (if available).
+
+### Viewing Created Shapes
+
+- All the shapes you create and edit will be visible in the 3D scene, allowing you to visualize your design.
+
+## Features
+
+The project boasts the following features:
+
+- **Primitive Shape Generation:** Users can create essential building blocks for geometric constructions on a chosen plane.
+  - **Points:** Represent a specific location on the selected plane.
+  - **Lines:** Connect two points on the plane, creating a straight path.
+  - **Circles:** Create flat, circular shapes on the chosen plane.
+  - **Ellipses:** Create oval shapes on the plane with customizable dimensions.
+  - **Arcs:** Generate curved segments of circles on the plane, defining by start and end angles, radius, and direction. (If applicable based on your implementation)
+- **Shape Parameterization:** Users can set properties for each primitive (e.g., coordinates, lengths for lines, radii, angles, directions) to achieve desired geometries.
+- **React-based Frontend:** The user interface is built with React for component-based development and efficient rendering.
+- **TypeScript for Type Safety:** TypeScript provides type annotations for improved code maintainability and reduced runtime errors.
+- **WebGL Rendering:** The project utilizes WebGL and three.js to render the shapes and scene with clear visualization.
+
+## Technical Details
+
+Here's a breakdown of the technologies used in the project:
+
+- **Frontend:** [React](https://react.dev/)
+- **Type Safety:** [TypeScript](https://www.typescriptlang.org/)
+- **3D Rendering:** WebGL with [three.js](https://threejs.org/)
+- **Other Technologies:** HTML, CSS
+
+## Contributing
+
+We welcome contributions to this project! Please see the `CONTRIBUTING.md` file (if it exists) for details on how to contribute code, report issues, or suggest improvements.
 
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/)

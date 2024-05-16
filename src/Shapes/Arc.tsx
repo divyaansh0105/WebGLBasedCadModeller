@@ -21,7 +21,33 @@ class Arc implements Shape {
     this.plane = plane;
 
     // Initialize Vertices2D and Vertices3D based on the plane
+    this.convert2dto3d();
     this.initializeVertices();
+  }
+
+  private convert2dto3d()
+  {
+    if(this.plane === 'YZ')
+      {
+        let temp1 = this.Center.x;
+        let temp2 = this.Center.y;
+        let temp3 =this.Center.z;
+        
+        this.Center.x = temp3;
+        this.Center.y = temp1;
+        this.Center.z = temp2;
+      }
+      
+    if(this.plane === 'ZX')
+      {
+        let temp1 = this.Center.x;
+        let temp2 = this.Center.y;
+        let temp3 =this.Center.z;
+        
+        this.Center.x = temp1;
+        this.Center.y = temp3;
+        this.Center.z = temp2;
+      }
   }
 
   private initializeVertices(): void {
@@ -42,19 +68,19 @@ class Arc implements Shape {
           break;
         
           case 'YZ':
-          x = this.Center.x + Math.cos(angle) * this.Radius;
-          y = this.Center.y + Math.sin(angle) * this.Radius;
-          z = this.Center.z ;
-          this.Vertices2D.push(x, y,0);
-          this.Vertices3D.push(z, x, y);
+          x = this.Center.x ;
+          y = this.Center.y + Math.cos(angle) * this.Radius;
+          z = this.Center.z  + Math.sin(angle) * this.Radius ;
+          this.Vertices2D.push(y, z,0);
+          this.Vertices3D.push(x, y, z);
           break;
         
         case 'ZX':
           x = this.Center.x + Math.cos(angle) * this.Radius;
-          y = this.Center.y + Math.sin(angle) * this.Radius;
-          z = this.Center.z ;
-          this.Vertices2D.push(x, y,0);
-          this.Vertices3D.push(x, z, y);
+          y = this.Center.y ;
+          z = this.Center.z + Math.sin(angle) * this.Radius;
+          this.Vertices2D.push(x, z,0);
+          this.Vertices3D.push(x, y, z);
           break;
         
           default:
@@ -111,6 +137,43 @@ class Arc implements Shape {
     }
 
     return false; // The point is not on the perimeter of the arc
+  }
+
+  public getProperties(): { [propertyName: string]: number } {
+    return {
+      CenterX: this.Center.x,
+      CenterY: this.Center.y,
+      CenterZ: this.Center.z,
+      Radius: this.Radius,
+      StartAngle: this.StartAngle/0.0174533,
+      EndAngle: this.EndAngle/0.0174533,
+    };
+  }
+
+  public updateProperties(properties: { [propertyName: string]: number }): void {
+    if ('CenterX' in properties) {
+      this.Center.x = properties.CenterX;
+    }
+    if ('CenterY' in properties) {
+      this.Center.y = properties.CenterY;
+    }
+    if ('CenterZ' in properties) {
+      this.Center.z = properties.CenterZ;
+    }
+    if ('Radius' in properties) {
+      this.Radius = properties.Radius;
+    }
+    if ('StartAngle' in properties) {
+      this.StartAngle = properties.StartAngle * 0.0174533; // Convert degrees to radians
+    }
+    if ('EndAngle' in properties) {
+      this.EndAngle = properties.EndAngle * 0.0174533; // Convert degrees to radians
+    }
+    this.Vertices2D =[];
+    this.Vertices3D =[];
+
+    this.convert2dto3d();
+    this.initializeVertices();
   }
 
 }

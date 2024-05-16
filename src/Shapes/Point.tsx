@@ -12,26 +12,52 @@ class Point implements Shape {
     this.Point = point ;
     this.plane = plane;
     
-    
+    this.convert2dto3d();    
     this.initializeVertices();
     
+  }
+
+  
+  private convert2dto3d()
+  {
+    if(this.plane === 'YZ')
+      {
+        let temp1 = this.Point.x;
+        let temp2 = this.Point.y;
+        let temp3 = this.Point.z;
+        
+        this.Point.x = temp3;
+        this.Point.y = temp1;
+        this.Point.z = temp2;
+      }
+      
+    if(this.plane === 'ZX')
+      {
+        let temp1 = this.Point.x;
+        let temp2 = this.Point.y;
+        let temp3 =this.Point.z;
+        
+        this.Point.x = temp1;
+        this.Point.y = temp3;
+        this.Point.z = temp2;
+      }
   }
 
   private initializeVertices(): void {
     if (this.plane === 'XY') 
     {
-      this.vertices2d.push(this.Point.x,this.Point.y);
+      this.vertices2d.push(this.Point.x,this.Point.y,0);
       this.vertices3d.push(this.Point.x,this.Point.y,this.Point.z);
     } 
     else if (this.plane === 'ZX') 
     {
-      this.vertices2d.push(this.Point.x,this.Point.y);
-      this.vertices3d.push(this.Point.x,this.Point.z,this.Point.y);
+      this.vertices2d.push(this.Point.x,this.Point.z,0);
+      this.vertices3d.push(this.Point.x,this.Point.y,this.Point.z);
     } 
      else if (this.plane === 'YZ') 
     {
-      this.vertices2d.push(this.Point.x,this.Point.y);
-      this.vertices3d.push(this.Point.z,this.Point.x,this.Point.y);
+      this.vertices2d.push(this.Point.y,this.Point.z,0);
+      this.vertices3d.push(this.Point.x,this.Point.y,this.Point.z);
     }
     
   }
@@ -48,7 +74,7 @@ class Point implements Shape {
     const point = new THREE.Mesh(geometry, material);
 
     // Set the position of the point mesh
-    point.position.set(this.vertices3d[0], this.vertices3d[1], this.vertices3d[2]);
+    point.position.set(this.vertices2d[0], this.vertices2d[1], this.vertices2d[2]);
 
     // Add the point to the scene
     scene.add(point);
@@ -76,6 +102,29 @@ class Point implements Shape {
     return this.Point.x === x && this.Point.y === y;
   }
 
+  public getProperties(): { [key: string]: number } {
+    return {
+      x: this.Point.x,
+      y: this.Point.y,
+      z: this.Point.z,
+    };
+  }
+
+  public updateProperties(properties: { [propertyName: string]: number }): void {
+    if ('x' in properties) {
+      this.Point.x = properties.x;
+    }
+    if ('y' in properties) {
+      this.Point.y = properties.y;
+    }
+    if ('z' in properties) {
+      this.Point.z = properties.z;
+    }
+
+    this.initializeVertices();
+  }
 }
+
+
 
 export default Point;
