@@ -1,0 +1,72 @@
+.toolbar {
+  background-color: rgb(11, 104, 118);
+  padding: 10px;
+  height: 60px; /* Adjust the height as needed */
+  width: 100%;
+}
+
+  
+  .button {
+    width: 70px; /* Adjust width as needed */
+    height: 60px; /* Adjust height as needed */
+    margin-right: 10px;
+    margin-bottom: 5px; /* Add margin bottom for spacing between buttons */
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block; /* Ensure buttons are displayed in a line */
+    vertical-align: middle; /* Align buttons vertically */
+  }
+  
+  .button:hover 
+  {
+    background-color: #444; /* Darker shade for hover effect */
+  }
+
+  .sketch-view 
+  {
+    background-color: rgb(127, 31, 113);
+    color: #fff;
+  }
+
+  .sketch-view:hover 
+  {
+    background-color: #df19b7; /* Darker shade for hover effect */
+  }
+  
+  .plane 
+  {
+    background-color: rgb(184, 89, 144);
+    color: #fff;
+  }
+
+  .plane:hover {
+    background-color: pink; /* Darker shade for hover effect */
+  }
+  
+  .shape 
+  {
+    background-color: rgb(83, 83, 218);
+    color: #fff;
+  }
+
+  .shape:hover {
+    background-color: #000080; /* Darker shade for hover effect */
+  }
+
+  .button.shape 
+  {
+    background-size: contain; /* Ensure the image fits within the button */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-position: center; /* Center the image within the button */
+  }
+  
+  .erase-finish 
+  {
+    background-color: rgb(255, 149, 0);
+    color: #fff;
+  }
+  .erase-finish:hover {
+    background-color: #f07909; /* Darker shade for hover effect */
+  }
