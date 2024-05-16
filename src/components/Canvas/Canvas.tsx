@@ -32,8 +32,11 @@ const Canvas: React.FC<{ selectedPrimitive: string | null; selectedPlane: string
 useEffect(() => {
     const handleCanvasClick = (event: MouseEvent) => 
     {   
-      if(GetMouseClick==="no")return ; 
-      handleMouseClick(event, canvasRef, controlsRef, setClickedPosition);
+      if(GetMouseClick==="yes") 
+      {
+        console.log("mouselclick registered");
+        handleMouseClick(event, canvasRef, controlsRef, setClickedPosition);
+      }
     };
 
     window.addEventListener('click', handleCanvasClick);
@@ -45,10 +48,10 @@ useEffect(() => {
 
   useEffect(()=>
   {
-    
-    if(SelectedPrimitive)SetMouseClick("yes");
-    if(FinsishSketchButton)SetMouseClick("no");
-    
+   
+     if(SelectedPrimitive){SetMouseClick("yes");}
+     if(FinsishSketchButton)SetMouseClick("no");
+     
       
   },[FinsishSketchButton,SelectedPrimitive]);
 
@@ -63,7 +66,8 @@ useEffect(() => {
       }));
     };
 
-    switch (SelectedPrimitive) {
+    switch (SelectedPrimitive) 
+    {
       case 'Circle':
         const circle = new Circle(clickedPosition, 2, SelectedPlane);
         addShapeToPlane(circle, SelectedPlane);
@@ -84,12 +88,16 @@ useEffect(() => {
         const arc = new Arc(clickedPosition, 1.7, 35, 195, SelectedPlane);
         addShapeToPlane(arc, SelectedPlane);
         break;
+      case 'Erase':
+        Erasefun();
+        break;
       default:
         console.error('Unknown primitive:', SelectedPrimitive);
     }
   }, [clickedPosition]);
 
-  useEffect(() => {
+  useEffect(() => 
+  {
     setCurrentPlaneShapes(planes[SelectedPlane] || []);
   }, [planes, SelectedPlane]);
 
@@ -127,18 +135,20 @@ useEffect(() => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderShapes();
     });
+
+    
   
     return () => {
       scene.clear();
       renderer.dispose();
     };
-  }, [currentPlaneShapes, SelectedPlane]); // Include SelectedPlane in the dependencies
+  }, [currentPlaneShapes]); // Include SelectedPlane in the dependencies
   
   
 
   useEffect(() => {
     // Perform your action here when viewstatus changes
-    console.log("View = " + Viewstatus);
+   
     if(Viewstatus)
       {
         const canvas = canvasRef.current;
@@ -187,27 +197,35 @@ useEffect(() => {
       }
   }, [Viewstatus]);
 
-  useEffect(() => {
-    // Perform your action when eraseClicked state changes
-    console.log("Before = " + clickedPosition?.x + " " + clickedPosition?.y + " " + clickedPosition?.z);
-    if (EraseButton) 
-    {   
-        SetMouseClick("yes");
-        console.log("after = " + clickedPosition?.x + " " + clickedPosition?.y + " " + clickedPosition?.z);
-        if (clickedPosition) 
-        {
-            const clickedX = clickedPosition.x;
-            const clickedY = clickedPosition.y;
 
-            // Iterate through current plane shapes and check if the clicked position is inside any shape's boundary
-            
-            // Update the state with the filtered array, removing the shapes that were clicked on
-            console.log("before " + currentPlaneShapes);
 
-            console.log("After " + currentPlaneShapes);
-        }
-    }
-  }, [EraseButton]);
+  // Perform your action when eraseClicked state changes
+  const Erasefun = () =>
+  {
+    
+      if (clickedPosition) {
+        const clickedX = clickedPosition.x;
+        const clickedY = clickedPosition.y;
+
+        // Iterate through the planes and check if the clicked position is inside any shape's boundary
+        const updatedPlanes = Object.keys(planes).reduce((updated, plane) => {
+            const updatedShapes = planes[plane].filter(shape => {
+                // Check if the clicked position is inside the area of the shape
+                if (shape.IsPointOnPerimeter) {
+                    return !shape.IsPointOnPerimeter(clickedX, clickedY);
+                } else {
+                    return true; // If the shape doesn't have the IsPointInside method, keep it
+                }
+            });
+            return { ...updated, [plane]: updatedShapes };
+        }, {});
+
+        // Update the state with the filtered array, removing the shapes that were clicked on
+        setPlanes(updatedPlanes);
+    } 
+  }
+  
+
 
   
 

@@ -10,7 +10,7 @@ import arcIcon from './icons/arc.png';
 interface ToolbarProps {
   OnSelectPrimitive: (primitive: string) => void;
   OnSelectPlane: (plane: string) => void;
-  OnErase : (erase : boolean) => void;
+  OnErase : (erase  : boolean ) => void;
   OnViewClick: (clicked: boolean) => void; 
   OnFinishSketchClick: (finishclicked : boolean) => void;
 }
@@ -22,7 +22,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, OnE
   const [showSketchAndView, setShowSketchAndView] = useState(true);
   const [Viewbutton, setView] = useState(false);
   const [Finishbuton,SetFinish] = useState(false);
-  const [EraseButton,SetErase] = useState(true);
+  //const [EraseButton,SetErase] = useState(true);
 
   const handleSketchClick = () => {
     setShowPlanes(true);
@@ -31,7 +31,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, OnE
     setShowSketchAndView(false);
     SetFinish(!Finishbuton); 
     OnFinishSketchClick(Finishbuton);
-    console.log("finsha =" + Finishbuton);
+    
    
   };
 
@@ -59,9 +59,9 @@ const Toolbar: React.FC<ToolbarProps> = ({ OnSelectPrimitive, OnSelectPlane, OnE
   const handleEraseClick = () => 
   {
 
-    SetErase(!EraseButton);
-    OnErase(EraseButton);
-      
+    //SetErase(!EraseButton);
+    //OnErase(EraseButton);
+    OnSelectPrimitive('Erase');
   };
 
   const handleFinishSketchingClick = () => {

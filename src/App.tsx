@@ -14,7 +14,7 @@ const App: React.FC = () =>
 
   const handlePrimitiveSelection = (primitive: string) => 
   {
-   
+    
     
       setSelectedPrimitive(primitive);
     
